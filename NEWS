@@ -1,0 +1,286 @@
+version 2.9.0
+- some updates on the NAMESPACE to comply to new CRAN policies.
+- bugfix: MIP method for error localisation ignored time constraint
+- bugfix: edge case in c.editmatrix for empty edit matrices.
+- bugfix: editfile w/type='num' would crash on empty file input.
+- bugfix in as.igraph methods for editmatrix, editarray, editset
+- bugfix: edge case in substValue methods
+- bugfix: contains.editmatrix crashed on editmatrix containing 0 variables
+- bugfix: user-defined M was ignored in MIP version of error localizer.
+- mixed typed edits now have naming convention used in paper
+- added SOS1 type edits for categorical constraint. Should improve mip performance.
+- editset subsetting now support negative row index
+- printing an empty cateditmatrix doesn't fail anymore
+- fix a bug in parsing a mix edit with no numeric constraint in the premisse (thanks to Alois Haslinger)
+
+version 2.7.2
+- Suggest-dependency on iterators removed
+- now depends on lpSolveAPI (instead of suggests) 
+- small documentation changes to comply to new CRAN policy
+- bugfix in summary.violatedEdits: would crash on NA's
+- Concatenating editmatrix, editset and editset now keep their rownames
+- Simplified mip implementation
+- fixed a bug, empty levels are now allowed in editarray. Thanks to kforner
+
+
+version 2.7-1
+- bugfix: summary.violatedEdits crashed when no edits were violated.
+- Branch and Bound method now bounds (instead of crashes) when memory allocation for variable elimination fails
+- The 'status' of errorLocation object gains column indicating whether the memory allocation failure was hit as bound condition
+- localizeErrors gains 'retrieve' argument, controling which solution to return: the best or the first encountered.
+- changed method parameter of localizeErrors into "bb" or "mip" ("localizer" is deprecated).
+
+version 2.7-0
+- bugfix: numeric edits now include constants assigned in editfile (thanks to Jeroen Pannekoek)
+- BREAKING CHANGE: first argument in as.igraph is now called 'x' to comply with new generic from igraph package
+- bugfix in contains.editset: in some cases not all edits were found
+- contains now gives more meaningfull error msg when nonexistent variable names are passed
+- bugfix: brackets inside mixed edits were not parsed: if ((x>0 && y>0)) z < 0
+- changed dependency on igraph0 into igraph
+- getVars method for editarray now returns NULL when type argument is not 'cat' (the default). Thanks to Elmar Wein.
+- print methods for editmatrix and editarray gain textOnly argument (default is FALSE for backward compatibility)
+- bugfix in parseMix: mixed edits containing an numeric equality constraint now generate an error (which is correct, since equality constraints in mixed edits are not supported.) 
+- bugfix in summary.violatedEdits, the "edit" column showing the violated edit was incorrect (the method itself was correct though), thanks to Francesca Pogelli for reporting that error
+- bugfix in weight calculation: weight of variables exceeding range edits was counted twice
+- errorLocalizer.editarray gains 'tol' argument for feasibility checks
+- records with large maximum absolute value now pre-scaled when localizing errors with MIP
+- bugfix in as.character.editarray: failure when edit excludes subset of datamodel
+- bugfix in substValue.editset (processing of dummy variables failed in certain cases)
+- exported nedits
+
+
+version 2.5-0
+- discussion papers are no longer vignettes, but included in inst/doc.
+- complete documentation overhaul
+- overloaded 'c' for editset
+- localizeErrors uses vectorized method for single-variable, single-edit blocks ('singleton' method)
+- error localization based on lpSolveApi uses block-wise processing for enhanced numerical stability
+- function editType exported: lists edit categorie for 'editset' ('num', 'cat', 'mix')
+- duplicated dummyvariables in an editset are removed (making 'disjunct' much more efficient)
+- localizeErrors for conditional restrictions (editset)
+- errorLocalizer.-functions now accept a named list as records (as well as named vector)
+- Option 'useBlocks' in function 'localizeErrors' is now ignored (always TRUE) and will be removed
+- errorLocalizer (b&b) for conditional restrictions (editlist/editset)
+- isObviouslyInfeasible for editlist/editenv/editset
+- bugfix in localizeErrors: logical columns caused crashes when both TRUE and FALSE present
+- bugfix in violatedEdits.editarray: crashed when 0 columns were present (Thanks to Elmar Wein)
+- bugfix en parser: editset() crashed at numberless mixed expressions as 'if (A=="a") x > y
+- bugfix in violatedEdits.editset: wrong handling of numerical edits.
+- Better printing of cateditmatrix.
+- BREAKING CHANGE: listViolatededits and checkRows are deprecated. Use violatedEdits in stead.
+- BREAKING CHANGE: violatedEdits.data.frame, toDataFrame and iter.backtracker are now editrules internal and no longer supported
+- BREAKING CHANGE: argument fancynames of eliminate.editmatrix is removed
+
+version 2.2-0
+- Added function 'disjunct' decoupling conditional numeric/categorical edit sets
+- removed deprecated functions 'eliminateFM' and 'editrules'
+- Fixed two corner case bugs in localizeErrors with method="mip"
+- bugfix in duplicated.editmatrix
+- fix in documentation of plot.editset 
+- bugfix in localizeErrors.editmatrix causing error when a value doesn't conform to datamodel (Thanks to Elmar Wein)
+
+version 2.1-2
+- removed some unnecessary files from inst/doc
+- added function generateEdits: derive all nonredundant essentialy new categorical edits.
+- editfile reads categorical, numerical and mixed edits.
+- violatedEdits works for objects of class editset.
+- BREAKING CHANGE: function 'editrules' is obsolete. Use as.data.frame or as.editmatrix.
+- added as.character, print method for editset.
+- as.data.frame.editmatrix and .editarray now only return 'description' column if input has description attribute.
+- edits in editmatrix and editarray are now printed with prefix 'num' and 'cat', in stead of 'e', datamodel gets prefix 'dat'
+- added nedits function counting the number of edits in an editmatrix -array or -set
+- added blockIndex function
+- is.editset, getVars, blocks, reduce and row indexing ([) for editset objects
+- violatedEdits, summary, echelon, as.data.frame, plot, as.igraph, adjacency for editset objects
+- simpler internal representation for editset
+- substValue.editmatrix gains argument removeredundant (default:TRUE) indicating wether or not to remove redundant rows.
+- added substValue.editset
+
+version 2.0-3
+- new generic function checkDatamodel: checks data agains datamodel implied by editarray
+- bugfix in localizeErrors: crashed when reduce() (used in blocks) removes variables in editarray (thanks to Bikram Maharjan)
+- internally, eliminate.editarray performs extra edit redundancy checks
+- fixed cornercase in `[.editarray`. Now correctly handles empty character ("") as category name.
+- added numcat function, returns number of categories for each variable in an editarray
+
+version 2.0-2
+- NOTE: 2.0-2 is not a CRAN release
+- includes *BETA* version of mixed edit parsing
+- includes *BETA* version of error localiztion as MIP problem (option method='mip' in localizeErrors)
+- eliminate.editarray gained speed in certain cases
+- fixed cornercase in editarray: empty category value gave new variable 
+- New function editfile reads edits and domain definitions from text file
+- editarray gains env (environment) argument
+- editarray and editmatrix now handle zero-length arguments
+
+version 2.0-1
+- bugfix in isSubset.editarray
+- buxfix in localizeErrors: maxduration was previously ignored (thanks to Francesca Pogelli and Teresa Buglielli of ISTAT)
+- buxfix in parseEdits: non constant parsing was not detected. It is now also possible to use x*100 (thanks to Francesca Pogelli and Teresa Buglielli of ISTAT)
+- bugfix in errorLocalizer: no solution was returned if maxdurationExceeded==TRUE (even if at least 1 solution was found)
+- bugfix in summary.errorLocation: could not handle NA in status fields
+
+version 2.0-0
+- Final version of vignette.
+- Function 'contains' now S3 generic and overloaded for editmatrix object.
+- BREAKING CHANGE. as.data.frame.editmatrix is now symmetrical with as.data.frame.editarray. Use toDataFrame for old behaviour.
+- str overloaded for objects of class editarray (gives output similar to str.editmatrix)
+
+version 1.9-0
+- Parser for categorical edits accepts edits in the form "if ( <set expression> ) FALSE"
+- Parser for categorical edits accepts '&' as well as '&&'
+- Corner case in reduce.editmatrix: now handles empty inputmatrices.
+- substValue.editarray now works for boolean values
+- Parser for all edits accepts expression vector
+
+version 1.8-1
+- fixed a corner case bug for deducorrect
+
+version 1.8-0
+- violatedEdits.editmatrix more robust against NA's in records
+- plot method for arguments of class errorLocation, violatedEdits
+- errorLocalizer now throws error when edit set contains variables not encountered in record.
+- solved edge case in error localizer. $adapt would be NA if all variables were NA (now TRUE)
+- bugfix in violatedEdits.editmatrix (inequalities were checked incorrectly)
+- bugfix in edge case of 'contains' (nonuniform output if editarray has only one rule)
+- summary method for arguments of class editmatrix, editarray, errorLocation
+- localizeErrors now accepts an array of weights so weights can be set per record
+- localizeErrors gains arguments 'useBlocks' (default: TRUE) and 'verbose' (default: FALSE).
+- variable and edge nodes can be colored in plot.editmatrix or plot.editarray.
+
+version 1.7-0
+- several improvements in parsing categorical edit rules in the presence of & and | operators.
+- solved a bug in violatedEdits causing inequality violations to go unnoticed (since version 1.5.0, thanks to Elmar Wein)
+- substValue.editarray now works for multiple variables
+- Introduced the special FALSE edit (indicating that the set of valid records is empty)
+- editarray now emits error when the | or || operator is used in conjuncion with an 'if' statement.
+- Solved inconsistent parsing character->editmatrix->character in case a (derived) edit reduces the datamodel
+- Solved bug in blocks (constants were ignored for obects of class editmatrix)
+- Output of errorLocalizer.editarray is now equivalent to errorLocalizer.editmatrix
+- isFeasible tested for objects of class editarray (works)
+- blocks now also works for objects of class editarray
+- overloaded indexing for objects of class editarray
+- added function 'reduce' which deletes unnecessary variables and rows from editarray or edimatrix
+- BREAKING CHANGE argument 'remove' is replaced with reduce for clarity
+- NOTE: Default value for argument 'warn' in isFeasible is now set to TRUE
+- NOTE: Default value for argument 'remove' in substValue.editarray is now set to FALSE
+
+version 1.6-0
+- Added functionality for plotting edit graphs directly from edit sets
+- Added functionality for deriving igraph objects directly from edit sets
+- Added functionality for deriving adjacency matrices for edit sets
+- Package now suggests igraph package for graphical analysis of edit sets
+- Fixed bug causing wrong error localization or crash when weights are used. (Thanks to Kenneth Chin-A-Fat)
+
+version 1.5-2
+- Fixed column matching bug in violatedEdits.editarray
+
+version 1.5-1
+- Fixed a bug in violatedEdits.editmatrix which caused deducorrect correctTypos to fail (Thanks to Brian Ripley for contacting us)
+
+version 1.5-0
+- BETA FUNCTIONALITY: Error localization, variable elimination etc. for categorical variables.
+- new function localizeErrors(E,dat) processes whole dataset with $searchBest() (needs more testing).
+- errorLocalizer throws error at invalid weights (thanks to Kenneth Chin-A-Fat).
+- Argument maxweight was ignored by errorLocalizer.editmatrix, now works.
+- violatedEdits has better (more clear) output.
+
+version 1.0-2
+- solved bug in as.character.editmatrix (thanks to Sander Scholtus)
+
+version 1.0-1
+- solved edge case in $searchBest() method of errorLocalizer (thanks to Sander Scholtus)
+
+version 1.0-0
+- Formal upgrade only.
+
+version 0.9-1
+- errorLocalizer now robust when variables occur in record and not in editmatrix.
+
+version 0.9-0
+- Performance gain by improved bounding condition in backtracking object returned by errorLocalizer 
+- functions getH and geth for objects of class editmatrix added.
+- removed bug from $searchBest(), a sole solution wasn't returned.
+- backtracker$searchNext() and $searchAll() gain maxduration argument
+- BREAKING CHANGE: function findBlocks replaced by blocks. finblocks now emits warning, will become error in next release
+- Solved bug causing eliminateFM to return spurious but harmless edits in edge case, thanks to Sander Scholtus
+- Backtracker gains maxdepth and maxduration parameter
+- errorLocalizer gains maxduration, maxadapt and maxweight parameter
+- removed deprecated functions cp.editmatrix, replaceValue
+ 
+version 0.8-0
+- removed deprecated functions getC. getMatrix from source
+- deprecated functions cp.editmatrix, replaceValue now emit error
+- added index to vignette
+- solved corner case error in error localizer
+- BREAKING CHANGE: renamed choicepoint into backtracker
+- cp object generated by errorLocalizer does not return final editmatrix anymore (useless).
+- solved a bug causing isObviouslyInfeasible to miss certain cases
+- substValue can now replace multiple values at once.
+- `[.editmatrix` now retains derivation history (previously lost in substValue operations)
+- removed a bug from echelon.editmatrix, it failed when no operation was possible.
+
+version 0.7-1
+- made as.errormatrix a bit more robust and solved a cornercase 
+- fixed bug in editmatrix causing crashes in cornercase when "description" column of input is empty.
+
+version 0.7
+- errorLocalizer gains searchBest() function, returns random solution in case of degeneracy
+- added as.character coercions in editmatrix to solve crash
+- BREAKING CHANGE: replaceValues renamed to substValues. Currently warns, will emit error in next release.
+- BREAKING CHANGE: cp.editmatrix renamed to errorLocalizer and now S3 generic. Currently warns, will emit error in next release.
+- getC and getMatrix are deprecated and now emit errors.
+- Vignette ready for review
+- solved bug in documentation of cp.editmatrix
+- solved bug in str.editmatrix
+- isObviouslyRedundant now finds duplicate rows within tolerance.
+- overloaded built-in function "duplicated" for editmatrix. 
+- Added full feasibility check for editmatrix: isFeasible
+- removed bug from findBlocks and exported.
+
+version 0.6
+- Edit rule coercions: as.expression as.character as.editmatrix as.data.frame
+- Transform equality restrictions to reduced row echelon form
+- Obvious (in)feasibility and redundancy checks for linear edit rules
+- The following functions are deprecated, and give a warning: getC, getMatrix (warnings will become errors in the next release).
+- Added cp.editmatrix which solves error localization under generalized Fellegi-Holt paradigm
+- Added choicepoint algorithm for generic binary search
+- Option normalize=TRUE for editmatrix is now the default
+- Overloaded str function for editmatrix object
+- Added fully vectorized Fourier-Motzkin elimination function with redundancy removal
+- Added a normalize function
+- Exported and documented replaceValue
+- rewrote internal representation of editmatrix, it is now an augemented matrix (A|b)
+- BREAKING CHANGE: clean up of notation/syntax/naming convention: constants are named b, coefficients are named A
+
+version 0.5
+- fixed breakage at single record input of violatedEdits
+- added findBlocks, break up a matrix in its constituing blocks
+
+version 0.4-1
+- long edit rules (> 60 characters) failed, the upper limit for editrules is right now 500
+- added row subscript operator for object of class editmatrix
+- added getMatrix, same functionality as as.matrix, but more symetric with respect to getOps, getC and getVars
+
+version 0.4
+- improved expression parsing
+- improved handling of wrong input for method editmatrix
+- improved handling of extra columns in editrules
+- added as.data.frame.editmatrix
+- negative coefficients and constants were not parsed correctly
+- added vignette
+- removed deprecated editsinfo parameter from editmatrix
+- added getOps and getCONSTANT functions for retrieving operators and constants from an editmatrix
+- checkRows is now S3 generic and overloaded for character, data.frame and editmatrix
+- added simplification of constraints (coefficients will be summed)
+- renamed errormatrix into violatedEdits
+
+version 0.2
+- added CONSTANT parsing and generation
+- simplified editmatrix by removing one parameter (accepting both types of input)
+- renamed editsinfo to more understandable editrules
+- removed documentation of internal "edits" function
+
+version 0.1-1
+- added an as.matrix function
+- improved editmatrix example
